@@ -1,0 +1,270 @@
+{
+  "button": {
+    "name": "Button",
+    "description": "Interactive element for triggering actions and events",
+    "props": {
+      "variant": {
+        "type": "enum",
+        "values": ["default", "destructive", "outline", "secondary", "ghost", "link"],
+        "default": "default",
+        "description": "Visual style variant"
+      },
+      "size": {
+        "type": "enum",
+        "values": ["sm", "default", "lg", "icon"],
+        "default": "default",
+        "description": "Size affecting padding and typography"
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the button"
+      },
+      "asChild": {
+        "type": "boolean",
+        "default": false,
+        "description": "Render as child element"
+      }
+    },
+    "tokens": {
+      "default": {
+        "background": "color-primary",
+        "foreground": "color-primary-foreground"
+      },
+      "destructive": {
+        "background": "color-destructive",
+        "foreground": "color-destructive-foreground"
+      },
+      "outline": {
+        "border": "color-border",
+        "background": "color-background"
+      },
+      "secondary": {
+        "background": "color-secondary",
+        "foreground": "color-secondary-foreground"
+      },
+      "ghost": {
+        "background": "transparent",
+        "hover": "color-muted"
+      },
+      "link": {
+        "foreground": "color-primary"
+      }
+    },
+    "accessibility": {
+      "role": "button",
+      "keyboardInteraction": ["Enter", "Space"]
+    },
+    "usage": {
+      "when": [
+        "Primary call-to-action",
+        "Form submission",
+        "Triggering dialogs or actions"
+      ],
+      "avoid": [
+        "Navigation (use Link instead)",
+        "Multiple primary buttons in same view"
+      ]
+    },
+    "examples": [
+      {
+        "title": "Primary button",
+        "code": "<Button>Click me</Button>"
+      },
+      {
+        "title": "Destructive action",
+        "code": "<Button variant=\"destructive\">Delete</Button>"
+      },
+      {
+        "title": "Outline button",
+        "code": "<Button variant=\"outline\">Cancel</Button>"
+      },
+      {
+        "title": "With icon",
+        "code": "<Button size=\"icon\"><PlusIcon /></Button>"
+      }
+    ]
+  },
+  "input": {
+    "name": "Input",
+    "description": "Text input field for user data entry",
+    "props": {
+      "type": {
+        "type": "string",
+        "default": "text",
+        "description": "HTML input type"
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "Placeholder text"
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the input"
+      }
+    },
+    "tokens": {
+      "background": "color-background",
+      "border": "color-input",
+      "foreground": "color-foreground",
+      "placeholder": "color-muted-foreground",
+      "focusRing": "color-ring"
+    },
+    "accessibility": {
+      "role": "textbox",
+      "requiresLabel": true
+    },
+    "usage": {
+      "when": ["Single-line text entry", "Form fields"],
+      "avoid": ["Multi-line content (use Textarea)"]
+    },
+    "examples": [
+      {
+        "title": "Basic input",
+        "code": "<Input placeholder=\"Enter your name\" />"
+      },
+      {
+        "title": "Email input",
+        "code": "<Input type=\"email\" placeholder=\"email@example.com\" />"
+      },
+      {
+        "title": "Password input",
+        "code": "<Input type=\"password\" placeholder=\"Password\" />"
+      }
+    ]
+  },
+  "card": {
+    "name": "Card",
+    "description": "Container for grouping related content",
+    "props": {},
+    "subcomponents": ["CardHeader", "CardTitle", "CardDescription", "CardContent", "CardFooter"],
+    "tokens": {
+      "background": "color-card",
+      "foreground": "color-card-foreground",
+      "border": "color-border"
+    },
+    "accessibility": {
+      "role": "article",
+      "semanticStructure": true
+    },
+    "usage": {
+      "when": ["Displaying grouped information", "Dashboard widgets", "Product cards"],
+      "avoid": ["Deeply nested cards"]
+    },
+    "examples": [
+      {
+        "title": "Basic card",
+        "code": "<Card>\n  <CardHeader>\n    <CardTitle>Title</CardTitle>\n    <CardDescription>Description</CardDescription>\n  </CardHeader>\n  <CardContent>\n    Content goes here\n  </CardContent>\n</Card>"
+      },
+      {
+        "title": "Card with footer",
+        "code": "<Card>\n  <CardHeader>\n    <CardTitle>Account</CardTitle>\n  </CardHeader>\n  <CardContent>\n    <p>Update your settings</p>\n  </CardContent>\n  <CardFooter>\n    <Button>Save</Button>\n  </CardFooter>\n</Card>"
+      }
+    ]
+  },
+  "select": {
+    "name": "Select",
+    "description": "Dropdown selection component for choosing from a list of options",
+    "props": {
+      "options": {
+        "type": "array",
+        "required": true,
+        "description": "Array of { value, label } objects"
+      },
+      "value": {
+        "type": "string",
+        "description": "Controlled value"
+      },
+      "onValueChange": {
+        "type": "function",
+        "description": "Callback when value changes"
+      },
+      "placeholder": {
+        "type": "string",
+        "default": "Select an option",
+        "description": "Placeholder text when no value selected"
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the select"
+      }
+    },
+    "tokens": {
+      "background": "color-background",
+      "border": "color-input",
+      "popupBackground": "color-card",
+      "highlighted": "color-muted",
+      "focusRing": "color-ring"
+    },
+    "accessibility": {
+      "role": "combobox",
+      "keyboardInteraction": ["ArrowUp", "ArrowDown", "Enter", "Escape"]
+    },
+    "usage": {
+      "when": ["Selecting from predefined options", "Form fields with limited choices"],
+      "avoid": ["Free-form input (use Input)", "Very long lists (use Combobox with search)"]
+    },
+    "examples": [
+      {
+        "title": "Basic select",
+        "code": "<Select\n  options={[\n    { value: 'apple', label: 'Apple' },\n    { value: 'banana', label: 'Banana' },\n  ]}\n  placeholder=\"Select a fruit\"\n/>"
+      },
+      {
+        "title": "Controlled select",
+        "code": "<Select\n  options={options}\n  value={value}\n  onValueChange={setValue}\n/>"
+      }
+    ]
+  },
+  "modal": {
+    "name": "Modal",
+    "description": "Overlay dialog for focused interactions",
+    "props": {
+      "open": {
+        "type": "boolean",
+        "description": "Controlled open state"
+      },
+      "onOpenChange": {
+        "type": "function",
+        "description": "Callback when open state changes"
+      }
+    },
+    "subcomponents": ["Modal.Trigger", "Modal.Content"],
+    "contentProps": {
+      "title": {
+        "type": "string",
+        "description": "Dialog title"
+      },
+      "description": {
+        "type": "string",
+        "description": "Dialog description"
+      }
+    },
+    "tokens": {
+      "backdrop": "black/80",
+      "background": "color-card",
+      "border": "color-border",
+      "foreground": "color-foreground"
+    },
+    "accessibility": {
+      "role": "dialog",
+      "focusTrap": true,
+      "keyboardInteraction": ["Escape to close"]
+    },
+    "usage": {
+      "when": ["Confirmations", "Forms requiring focus", "Critical information"],
+      "avoid": ["Non-critical content", "Long forms (use dedicated page)"]
+    },
+    "examples": [
+      {
+        "title": "Basic modal",
+        "code": "<Modal>\n  <Modal.Trigger>\n    <Button>Open Modal</Button>\n  </Modal.Trigger>\n  <Modal.Content title=\"Modal Title\" description=\"Modal description\">\n    <p>Modal content goes here</p>\n  </Modal.Content>\n</Modal>"
+      },
+      {
+        "title": "Controlled modal",
+        "code": "<Modal open={isOpen} onOpenChange={setIsOpen}>\n  <Modal.Content title=\"Confirm\">\n    <p>Are you sure?</p>\n    <Button onClick={() => setIsOpen(false)}>Close</Button>\n  </Modal.Content>\n</Modal>"
+      }
+    ]
+  }
+}

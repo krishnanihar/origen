@@ -1,0 +1,35 @@
+{
+  "name": "@origen/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for Origen design system (W3C DTCG format)",
+  "type": "module",
+  "main": "./build/tokens.js",
+  "types": "./build/tokens.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/tokens.d.ts",
+      "import": "./build/tokens.js"
+    },
+    "./build/css/tokens.css": "./build/css/tokens.css",
+    "./build/tokens.js": "./build/tokens.js"
+  },
+  "files": [
+    "build",
+    "src"
+  ],
+  "scripts": {
+    "build": "node config.js",
+    "clean": "rm -rf build"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.0.0",
+    "@tokens-studio/sd-transforms": "^1.0.0"
+  },
+  "keywords": [
+    "design-tokens",
+    "dtcg",
+    "style-dictionary",
+    "css-variables"
+  ],
+  "license": "MIT"
+}

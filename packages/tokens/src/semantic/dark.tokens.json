@@ -1,0 +1,22 @@
+{
+  "color": {
+    "$type": "color",
+    "background": { "$value": "{color.slate.950}" },
+    "foreground": { "$value": "{color.slate.50}" },
+    "muted": { "$value": "{color.slate.800}" },
+    "muted-foreground": { "$value": "{color.slate.400}" },
+    "card": { "$value": "{color.slate.900}" },
+    "card-foreground": { "$value": "{color.slate.50}" },
+    "border": { "$value": "{color.slate.800}" },
+    "input": { "$value": "{color.slate.800}" },
+    "primary": { "$value": "{color.blue.500}" },
+    "primary-foreground": { "$value": "{color.white}" },
+    "secondary": { "$value": "{color.slate.800}" },
+    "secondary-foreground": { "$value": "{color.slate.50}" },
+    "destructive": { "$value": "{color.red.500}" },
+    "destructive-foreground": { "$value": "{color.white}" },
+    "success": { "$value": "{color.green.500}" },
+    "success-foreground": { "$value": "{color.white}" },
+    "ring": { "$value": "{color.blue.400}" }
+  }
+}
