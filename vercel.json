@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm turbo run build --filter=@origen/mcp",
+  "outputDirectory": "packages/mcp/.next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs"
+}
