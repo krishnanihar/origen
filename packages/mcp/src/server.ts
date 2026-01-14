@@ -17,6 +17,11 @@ import {
   composeInterfaceOutputSchema,
 } from "./tools/compose-interface";
 import {
+  getLayoutPattern,
+  getLayoutPatternInputSchema,
+  getLayoutPatternOutputSchema,
+} from "./tools/get-layout-pattern";
+import {
   tokenResources,
   getTokenResource,
 } from "./resources/tokens";
@@ -129,6 +134,43 @@ export function createServer() {
             {
               type: "text",
               text: `${summary}\n\n\`\`\`tsx\n${output.code}\n\`\`\`\n\nComponents: ${output.components.map((c) => c.name).join(", ")}\nTokens: ${output.tokens.join(", ")}`,
+            },
+          ],
+          structuredContent: output,
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: error instanceof Error ? error.message : "Unknown error",
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Register get_layout_pattern with the new registerTool() API
+  server.registerTool(
+    "get_layout_pattern",
+    {
+      title: "Get Layout Pattern",
+      description:
+        "Get a pre-built layout pattern with structure, components, generated code, and usage guidance. Patterns include form-layout, split-view, dashboard-grid, modal-confirm, list-with-actions, hero-section, and empty-state.",
+      inputSchema: getLayoutPatternInputSchema,
+      outputSchema: getLayoutPatternOutputSchema,
+    },
+    async ({ pattern, options }) => {
+      try {
+        const output = getLayoutPattern({ pattern, options });
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Pattern: ${output.pattern}\nStructure: ${output.structure.type}${output.structure.columns ? ` (${output.structure.columns} columns)` : ""}\n\n\`\`\`tsx\n${output.code}\n\`\`\`\n\nComponents: ${output.components.map((c) => c.name).join(", ")}\nTokens: ${output.tokens.join(", ")}`,
             },
           ],
           structuredContent: output,

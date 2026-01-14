@@ -25,6 +25,31 @@
 | settings | Card + Select + Button |
 | modal/dialog | Modal + trigger Button |
 
+### get_layout_pattern Tool
+- Implemented with `registerTool()` pattern (new MCP SDK API)
+- Uses `outputSchema` for typed AI responses
+- Returns `structuredContent` alongside human-readable `content`
+- 104 tests passing
+
+**Features:**
+- Explicit pattern selection (7 pre-built patterns)
+- Customization options (title, description, columns, actions, variant)
+- Structure metadata (type, direction, gap, columns)
+- Slot definitions for composition points
+- Usage guidance with when/examples
+- JSX code generation
+
+**Layout Patterns:**
+| Pattern | Structure | Components |
+|---------|-----------|------------|
+| form-layout | stack | Card + CardHeader + CardContent + CardFooter + Input + Button |
+| split-view | grid (2 cols) | aside + nav + main + Button |
+| dashboard-grid | grid (n cols) | Card grid with stat cards |
+| modal-confirm | stack | Modal + Modal.Trigger + Modal.Content + Button |
+| list-with-actions | stack | Card + CardContent + divide-y items + Button |
+| hero-section | flex | section + h1 + p + Button |
+| empty-state | flex | div + icon + h3 + p + Button |
+
 ## Current Tools
 
 | Tool | API Pattern | Status |
@@ -34,12 +59,13 @@
 | get_code | `server.tool()` | Stable |
 | search_components | `server.tool()` | Stable |
 | compose_interface | `server.registerTool()` | New |
+| get_layout_pattern | `server.registerTool()` | New |
 
 ## Next Steps
 
 ### Planned Tools
-- `get_layout_pattern` — Return layout templates for common UI patterns
 - `validate_accessibility` — Check component usage for a11y issues
+- `suggest_pattern` — Recommend layout pattern based on use case description
 
 ### Considerations
 - Migrate existing tools to `registerTool()` pattern for consistency

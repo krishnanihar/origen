@@ -120,6 +120,8 @@ Add to your `claude_desktop_config.json`:
 | `get_component_spec` | Get complete specification for a component |
 | `get_code` | Generate implementation code with specified props |
 | `search_components` | Search components by description or use case |
+| `compose_interface` | Generate composed UI from natural language intent |
+| `get_layout_pattern` | Get pre-built layout patterns with structure and code |
 
 ### Example MCP Queries
 
@@ -141,6 +143,16 @@ Use the get_code tool to generate a destructive large Button with text "Delete"
 **Search components:**
 ```
 Use the search_components tool with query "form input"
+```
+
+**Compose an interface:**
+```
+Use the compose_interface tool with intent "create a login form with email and password"
+```
+
+**Get a layout pattern:**
+```
+Use the get_layout_pattern tool with pattern "form-layout" and options.title "Contact Us"
 ```
 
 ### MCP Resources
