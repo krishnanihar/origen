@@ -34,5 +34,8 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# MCP configuration (contains API keys)
+.mcp.json
+
 # TypeScript cache
 *.tsbuildinfo

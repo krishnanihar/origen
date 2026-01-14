@@ -12,6 +12,11 @@ import {
   searchComponentsSchema,
 } from "./tools/search-components";
 import {
+  composeInterface,
+  composeInterfaceInputSchema,
+  composeInterfaceOutputSchema,
+} from "./tools/compose-interface";
+import {
   tokenResources,
   getTokenResource,
 } from "./resources/tokens";
@@ -99,6 +104,46 @@ export function createServer() {
           },
         ],
       };
+    }
+  );
+
+  // Register compose_interface with the new registerTool() API
+  server.registerTool(
+    "compose_interface",
+    {
+      title: "Compose Interface",
+      description:
+        "Generate a composed UI interface from natural language intent. Returns layout configuration, component list, JSX code, and design tokens used.",
+      inputSchema: composeInterfaceInputSchema,
+      outputSchema: composeInterfaceOutputSchema,
+    },
+    async ({ intent, context }) => {
+      try {
+        const output = composeInterface({ intent, context });
+        const summary = output.suggestions
+          ? `No matching pattern found. Suggestions: ${output.suggestions.join(", ")}`
+          : `Generated ${context} for "${intent}"`;
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `${summary}\n\n\`\`\`tsx\n${output.code}\n\`\`\`\n\nComponents: ${output.components.map((c) => c.name).join(", ")}\nTokens: ${output.tokens.join(", ")}`,
+            },
+          ],
+          structuredContent: output,
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: error instanceof Error ? error.message : "Unknown error",
+            },
+          ],
+          isError: true,
+        };
+      }
     }
   );
 
