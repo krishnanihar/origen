@@ -122,6 +122,7 @@ Add to your `claude_desktop_config.json`:
 | `search_components` | Search components by description or use case |
 | `compose_interface` | Generate composed UI from natural language intent |
 | `get_layout_pattern` | Get pre-built layout patterns with structure and code |
+| `validate_accessibility` | Validate JSX/components for WCAG 2.1 AA accessibility |
 
 ### Example MCP Queries
 
@@ -153,6 +154,11 @@ Use the compose_interface tool with intent "create a login form with email and p
 **Get a layout pattern:**
 ```
 Use the get_layout_pattern tool with pattern "form-layout" and options.title "Contact Us"
+```
+
+**Validate accessibility:**
+```
+Use the validate_accessibility tool with code "<Input placeholder='Email' />"
 ```
 
 ### MCP Resources

@@ -50,6 +50,32 @@
 | hero-section | flex | section + h1 + p + Button |
 | empty-state | flex | div + icon + h3 + p + Button |
 
+### validate_accessibility Tool
+- Implemented with `registerTool()` pattern (new MCP SDK API)
+- Uses `outputSchema` for typed AI responses
+- Returns `structuredContent` alongside human-readable `content`
+- 60 tests passing
+
+**Features:**
+- Static WCAG 2.1 AA validation (no rendering required)
+- Accepts JSX code string or component array
+- Validates Input, Button, Modal.Content, Select, img
+- Returns severity-graded issues with suggestions
+- Calculates accessibility score (0-100)
+- Tracks passed rules
+
+**Validation Rules:**
+| Rule | Severity | WCAG | Component |
+|------|----------|------|-----------|
+| input-needs-label | error | 1.3.1, 4.1.2 | Input |
+| button-needs-name | error | 4.1.2 | Button |
+| modal-needs-label | error | 4.1.2 | Modal.Content |
+| select-needs-label | error | 1.3.1, 4.1.2 | Select |
+| img-needs-alt | error | 1.1.1 | img |
+| placeholder-not-label | warning | 3.3.2 | Input |
+| modal-needs-description | warning | 4.1.2 | Modal.Content |
+| redundant-alt | warning | 1.1.1 | img |
+
 ## Current Tools
 
 | Tool | API Pattern | Status |
@@ -60,12 +86,13 @@
 | search_components | `server.tool()` | Stable |
 | compose_interface | `server.registerTool()` | New |
 | get_layout_pattern | `server.registerTool()` | New |
+| validate_accessibility | `server.registerTool()` | New |
 
 ## Next Steps
 
 ### Planned Tools
-- `validate_accessibility` — Check component usage for a11y issues
 - `suggest_pattern` — Recommend layout pattern based on use case description
+- `generate_theme` — Create custom theme tokens from base colors
 
 ### Considerations
 - Migrate existing tools to `registerTool()` pattern for consistency

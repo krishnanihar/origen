@@ -22,6 +22,11 @@ import {
   getLayoutPatternOutputSchema,
 } from "./tools/get-layout-pattern";
 import {
+  validateAccessibility,
+  validateAccessibilityInputSchema,
+  validateAccessibilityOutputSchema,
+} from "./tools/validate-accessibility";
+import {
   tokenResources,
   getTokenResource,
 } from "./resources/tokens";
@@ -181,6 +186,50 @@ export function createServer() {
             {
               type: "text",
               text: error instanceof Error ? error.message : "Unknown error",
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Register validate_accessibility with the new registerTool() API
+  server.registerTool(
+    "validate_accessibility",
+    {
+      title: "Validate Accessibility",
+      description:
+        "Validate JSX code or component array for WCAG 2.1 AA accessibility issues. Returns issues with severity, WCAG references, and fix suggestions. Accepts code string or components array from compose_interface/get_layout_pattern.",
+      inputSchema: validateAccessibilityInputSchema,
+      outputSchema: validateAccessibilityOutputSchema,
+    },
+    async ({ code, components, context }) => {
+      try {
+        const output = validateAccessibility({ code, components, context });
+
+        const issuesSummary =
+          output.issues.length > 0
+            ? output.issues
+                .map((i) => `- [${i.severity.toUpperCase()}] ${i.message}`)
+                .join("\n")
+            : "No issues found.";
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Accessibility Score: ${output.score}/100\n\n${output.summary}\n\n${issuesSummary}`,
+            },
+          ],
+          structuredContent: output,
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: error instanceof Error ? error.message : "Validation error",
             },
           ],
           isError: true,
