@@ -78,15 +78,17 @@
 
 ## Current Tools
 
-| Tool | API Pattern | Status |
-|------|-------------|--------|
-| get_tokens | `server.tool()` | Stable |
-| get_component_spec | `server.tool()` | Stable |
-| get_code | `server.tool()` | Stable |
-| search_components | `server.tool()` | Stable |
-| compose_interface | `server.registerTool()` | New |
-| get_layout_pattern | `server.registerTool()` | New |
-| validate_accessibility | `server.registerTool()` | New |
+All 7 tools now use the `registerTool()` pattern with typed `outputSchema` and `structuredContent`.
+
+| Tool | API Pattern | Output Schema | Status |
+|------|-------------|---------------|--------|
+| get_tokens | `server.registerTool()` | category, theme, primitives, semantic | Stable |
+| get_component_spec | `server.registerTool()` | name, description, props, tokens, accessibility, usage, examples | Stable |
+| get_code | `server.registerTool()` | code, component, imports, dependencies, framework, props | Stable |
+| search_components | `server.registerTool()` | query, results (with score), count, hasMore | Stable |
+| compose_interface | `server.registerTool()` | layout, components, code, tokens, suggestions | Stable |
+| get_layout_pattern | `server.registerTool()` | pattern, structure, components, code, tokens, slots, usage | Stable |
+| validate_accessibility | `server.registerTool()` | valid, score, issues, summary, passedRules | Stable |
 
 ## Next Steps
 
@@ -94,19 +96,20 @@
 - `suggest_pattern` — Recommend layout pattern based on use case description
 - `generate_theme` — Create custom theme tokens from base colors
 
-### Considerations
-- Migrate existing tools to `registerTool()` pattern for consistency
-- Add `outputSchema` to existing tools for typed responses
+### Planned Improvements
+- AI-native components with built-in context awareness
+- OKLCH color system for perceptually uniform color manipulation
 - Expand intent patterns for compose_interface
 
 ## Architecture Notes
 
-### registerTool() vs tool()
+### registerTool() Pattern
 
-The new `registerTool()` API provides:
+All tools now use the `registerTool()` API which provides:
 - `title` field separate from tool name
+- `inputSchema` for validated input parameters
 - `outputSchema` for typed responses
-- `structuredContent` in handler return
+- `structuredContent` in handler return alongside human-readable `content`
 
 ```typescript
 server.registerTool(
@@ -118,8 +121,12 @@ server.registerTool(
     outputSchema: { ... }
   },
   async (input) => ({
-    content: [{ type: "text", text: "..." }],
-    structuredContent: { ... }  // Typed output
+    content: [{ type: "text", text: "Human-readable summary" }],
+    structuredContent: { ... }  // Typed output matching outputSchema
   })
 );
 ```
+
+### Migration Complete
+
+All 4 original tools (`get_tokens`, `get_component_spec`, `get_code`, `search_components`) were migrated from the legacy `server.tool()` API to `server.registerTool()` with full `outputSchema` support. See [docs/tool-migration-plan.md](tool-migration-plan.md) for migration details.

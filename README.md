@@ -114,6 +114,8 @@ Add to your `claude_desktop_config.json`:
 
 ### Available MCP Tools
 
+All tools use the `registerTool()` pattern with typed `outputSchema` and return both human-readable `content` and machine-readable `structuredContent`.
+
 | Tool | Description |
 |------|-------------|
 | `get_tokens` | Get design tokens by category (colors, spacing, typography, radius) |

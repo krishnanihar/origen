@@ -1,15 +1,25 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { getTokens, getTokensSchema } from "./tools/get-tokens";
+import {
+  getTokens,
+  getTokensInputSchema,
+  getTokensOutputSchema,
+} from "./tools/get-tokens";
 import {
   getComponentSpec,
-  getComponentSpecSchema,
+  getComponentSpecInputSchema,
+  getComponentSpecOutputSchema,
 } from "./tools/get-component-spec";
-import { getCode, getCodeSchema } from "./tools/get-code";
+import {
+  getCode,
+  getCodeInputSchema,
+  getCodeOutputSchema,
+} from "./tools/get-code";
 import {
   searchComponents,
-  searchComponentsSchema,
+  searchComponentsInputSchema,
+  searchComponentsOutputSchema,
 } from "./tools/search-components";
 import {
   composeInterface,
@@ -43,76 +53,116 @@ export function createServer() {
 
   // ============ TOOLS ============
 
-  server.tool(
+  server.registerTool(
     "get_tokens",
-    "Get design tokens by category (colors, spacing, typography, radius). Returns DTCG-format tokens.",
-    getTokensSchema,
+    {
+      title: "Get Design Tokens",
+      description:
+        "Get design tokens by category (colors, spacing, typography, radius). Returns DTCG-format tokens with optional theme-specific semantic values.",
+      inputSchema: getTokensInputSchema,
+      outputSchema: getTokensOutputSchema,
+    },
     async ({ category, theme }) => {
       const result = getTokens({ category, theme });
+
+      const primitiveCount = result.primitives
+        ? Object.keys(result.primitives).length
+        : 0;
+      const summary = `Retrieved ${category} tokens (${primitiveCount} primitives)${result.semantic ? ` with ${theme} semantic values` : ""}`;
+
       return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result, null, 2),
-          },
-        ],
+        content: [{ type: "text", text: summary }],
+        structuredContent: result,
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_component_spec",
-    "Get complete specification for a component including props, variants, tokens, and usage guidelines.",
-    getComponentSpecSchema,
+    {
+      title: "Get Component Spec",
+      description:
+        "Get complete specification for a component including props, variants, tokens, accessibility, and usage guidelines.",
+      inputSchema: getComponentSpecInputSchema,
+      outputSchema: getComponentSpecOutputSchema,
+    },
     async ({ component }) => {
       const spec = getComponentSpec({ component });
+
       if ("error" in spec) {
         return {
           content: [{ type: "text", text: spec.error }],
           isError: true,
         };
       }
+
+      const propCount = Object.keys(spec.props || {}).length;
+      const exampleCount = spec.examples?.length ?? 0;
+      const summary = `${spec.name}: ${spec.description}\n\nProps: ${propCount} | Examples: ${exampleCount} | Tokens: ${Object.keys(spec.tokens || {}).length}`;
+
       return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(spec, null, 2),
-          },
-        ],
+        content: [{ type: "text", text: summary }],
+        structuredContent: spec,
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_code",
-    "Generate implementation code for a component with specified props.",
-    getCodeSchema,
-    async ({ component, props, children }) => {
-      const code = getCode({ component, props, children });
+    {
+      title: "Get Component Code",
+      description:
+        "Generate implementation code for a component with specified props, variant, and framework target.",
+      inputSchema: getCodeInputSchema,
+      outputSchema: getCodeOutputSchema,
+    },
+    async ({ component, props, children, framework, variant }) => {
+      const result = getCode({ component, props, children, framework, variant });
+
+      const summary = `Generated ${result.component} code for ${result.framework}`;
+      const codeBlock = `\`\`\`tsx\n${result.imports.join("\n")}\n\n${result.code}\n\`\`\``;
+
       return {
-        content: [
-          {
-            type: "text",
-            text: `\`\`\`tsx\n${code}\n\`\`\``,
-          },
-        ],
+        content: [{ type: "text", text: `${summary}\n\n${codeBlock}` }],
+        structuredContent: result,
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "search_components",
-    "Search for components by description or use case.",
-    searchComponentsSchema,
-    async ({ query }) => {
-      const results = searchComponents({ query });
+    {
+      title: "Search Components",
+      description:
+        "Search for components by description, use case, or keywords. Returns ranked results with relevance scores.",
+      inputSchema: searchComponentsInputSchema,
+      outputSchema: searchComponentsOutputSchema,
+    },
+    async ({ query, limit }) => {
+      const result = searchComponents({ query, limit });
+
+      if (result.count === 0) {
+        return {
+          content: [{ type: "text", text: `No components found for "${query}"` }],
+          structuredContent: result,
+        };
+      }
+
+      const summary = result.results
+        .map(
+          (r) =>
+            `- ${r.displayName} (${Math.round(r.score * 100)}%): ${r.description}`
+        )
+        .join("\n");
+
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(results, null, 2),
+            text: `Found ${result.count} component${result.count > 1 ? "s" : ""} for "${query}":\n\n${summary}`,
           },
         ],
+        structuredContent: result,
       };
     }
   );
